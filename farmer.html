@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#166534">
+    <title>Farmer Dashboard | AgroConnect Zambia</title>
+    <link rel="stylesheet" href="farmer.css">
+    <script src="farmer.js" defer></script>
+</head>
+<body>
+<div class="app-shell">
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <a class="brand" href="/dashboard/farmer.html">
+            <span class="brand-icon">🌱</span>
+            <span>AgroConnect<small>ZAMBIA</small></span>
+        </a>
+
+        <div class="profile-mini">
+            <div class="avatar" id="avatar">F</div>
+            <div class="profile-details">
+                <strong id="farmerName">Farmer</strong>
+                <span id="farmerEmail">Loading account...</span>
+            </div>
+        </div>
+
+        <nav class="navigation" aria-label="Farmer navigation">
+            <p class="nav-heading">WORKSPACE</p>
+            <button class="nav-link active" data-section="overview">🏠 <span>Overview</span></button>
+            <button class="nav-link" data-section="products">📦 <span>My Products</span><b id="productNavCount">0</b></button>
+            <button class="nav-link" data-section="add-product">➕ <span>Add Product</span></button>
+            <button class="nav-link" data-section="orders">🧾 <span>Customer Orders</span><b id="orderNavCount">0</b></button>
+            <p class="nav-heading">PERSONAL</p>
+            <button class="nav-link" data-section="account">👤 <span>My Account</span></button>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="sidebar-tip">
+                <span>🌾</span>
+                <strong>Growing together</strong>
+                <p>Connect your harvest with customers across Zambia.</p>
+            </div>
+            <button class="logout-button" id="logoutBtn">↪ Sign out</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
+                <div>
+                    <p class="eyebrow">AGROCONNECT ZAMBIA</p>
+                    <h1 id="pageTitle">Dashboard Overview</h1>
+                </div>
+            </div>
+            <button class="button button-secondary" id="refreshAll">↻ Refresh</button>
+        </header>
+
+        <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+
+        <section class="page-section active" id="section-overview">
+            <div class="welcome-banner">
+                <div>
+                    <p class="eyebrow light">YOUR FARMING WORKSPACE</p>
+                    <h2>Welcome back, <span id="welcomeName">Farmer</span>!</h2>
+                    <p>Here is an overview of your products and customer orders.</p>
+                    <button class="button button-light" data-go="add-product">+ List a product</button>
+                </div>
+                <div class="welcome-art" aria-hidden="true">🌿</div>
+            </div>
+
+            <div class="section-heading">
+                <div><h2>Farm performance</h2><p>Your current business overview</p></div>
+            </div>
+
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <div class="stat-top"><span class="stat-icon">📦</span><span class="stat-label">PRODUCTS</span></div>
+                    <strong id="totalProducts">0</strong><p>Total listings</p>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-top"><span class="stat-icon">🌱</span><span class="stat-label">IN STOCK</span></div>
+                    <strong id="availableProducts">0</strong><p>Available products</p>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-top"><span class="stat-icon">🧾</span><span class="stat-label">ORDERS</span></div>
+                    <strong id="totalOrders">0</strong><p>Customer orders</p>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-top"><span class="stat-icon">⏳</span><span class="stat-label">PENDING</span></div>
+                    <strong id="pendingOrders">0</strong><p>Awaiting response</p>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-top"><span class="stat-icon">💰</span><span class="stat-label">ORDER VALUE</span></div>
+                    <strong class="stat-money" id="totalOrderValue">K0.00</strong><p>All orders combined</p>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-top"><span class="stat-icon">🤝</span><span class="stat-label">ACCEPTED</span></div>
+                    <strong id="acceptedOrders">0</strong><p>Orders accepted</p>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-top"><span class="stat-icon">✅</span><span class="stat-label">COMPLETED</span></div>
+                    <strong id="completedOrders">0</strong><p>Orders completed</p>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-top"><span class="stat-icon">🚫</span><span class="stat-label">REJECTED</span></div>
+                    <strong id="rejectedOrders">0</strong><p>Orders declined</p>
+                </article>
+            </div>
+
+            <p class="helper-text">Order value is calculated from order records. It is not confirmed income or proof of payment.</p>
+
+            <div class="content-card">
+                <div class="card-heading">
+                    <div><h2>Order performance</h2><p>Distribution of your customer orders</p></div>
+                    <button class="text-button" data-go="orders">View orders →</button>
+                </div>
+                <div class="order-performance">
+                    <div class="performance-row"><span>Pending</span><div class="performance-track"><div class="performance-fill pending-fill" id="pendingBar"></div></div><strong id="pendingBreakdown">0</strong></div>
+                    <div class="performance-row"><span>Accepted</span><div class="performance-track"><div class="performance-fill accepted-fill" id="acceptedBar"></div></div><strong id="acceptedBreakdown">0</strong></div>
+                    <div class="performance-row"><span>Completed</span><div class="performance-track"><div class="performance-fill completed-fill" id="completedBar"></div></div><strong id="completedBreakdown">0</strong></div>
+                    <div class="performance-row"><span>Rejected</span><div class="performance-track"><div class="performance-fill rejected-fill" id="rejectedBar"></div></div><strong id="rejectedBreakdown">0</strong></div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="card-heading"><div><h2>Recent customer orders</h2><p>Latest orders placed for your products</p></div><button class="text-button" data-go="orders">View all →</button></div>
+                <div class="table-wrap" id="recentOrders"><p class="empty-state">Loading orders...</p></div>
+            </div>
+
+            <div class="content-card">
+                <div class="card-heading"><div><h2>Your latest products</h2><p>Recently listed farm products</p></div><button class="text-button" data-go="products">Manage products →</button></div>
+                <div class="recent-products-grid" id="recentProducts"><p class="empty-state">Loading products...</p></div>
+            </div>
+        </section>
+
+        <section class="page-section" id="section-products">
+            <div class="section-heading">
+                <div><h2>My products</h2><p>Manage the products you offer to customers.</p></div>
+                <button class="button button-primary" data-go="add-product">+ Add product</button>
+            </div>
+            <div class="filter-bar">
+                <input id="productSearch" type="search" placeholder="Search products..." aria-label="Search products">
+                <select id="productStatusFilter" aria-label="Filter products by status">
+                    <option value="all">All statuses</option>
+                    <option value="available">Available</option>
+                    <option value="sold_out">Sold out</option>
+                </select>
+                <button class="button button-secondary" id="refreshProducts">↻ Refresh</button>
+            </div>
+            <div class="content-card"><div class="table-wrap" id="productsContainer"><p class="empty-state">Loading products...</p></div></div>
+        </section>
+
+        <section class="page-section" id="section-add-product">
+            <div class="section-heading"><div><h2 id="productFormTitle">Add a product</h2><p>Keep your listing accurate so customers know what you offer.</p></div></div>
+            <div class="content-card form-card">
+                <form id="productForm">
+                    <input type="hidden" id="editProductId">
+                    <div class="form-grid">
+                        <label class="field field-full">Product name
+                            <input id="productName" maxlength="150" required placeholder="e.g. Fresh tomatoes">
+                        </label>
+                        <label class="field">Price (ZMW)
+                            <input id="productPrice" type="number" min="0.01" step="0.01" required placeholder="e.g. 100">
+                        </label>
+                        <label class="field">Quantity available
+                            <input id="productQuantity" type="number" min="0.01" step="0.01" required placeholder="e.g. 50">
+                        </label>
+                        <label class="field">Selling unit
+                            <select id="productUnit" required>
+                                <option value="kg">Kilogram (kg)</option><option value="g">Gram (g)</option>
+                                <option value="tonne">Tonne</option><option value="bag">Bag</option>
+                                <option value="piece">Piece</option><option value="crate">Crate</option>
+                                <option value="litre">Litre</option><option value="bunch">Bunch</option>
+                            </select>
+                        </label>
+                        <label class="field">Product image URL (optional)
+                            <input id="productImage" type="url" placeholder="https://example.com/product.jpg">
+                        </label>
+                        <label class="field field-full">Description
+                            <textarea id="productDescription" rows="5" maxlength="2000" placeholder="Describe the quality, freshness or origin of your product..."></textarea>
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="button button-primary" id="saveProductBtn">Save product</button>
+                        <button type="button" class="button button-secondary" id="cancelProductEdit" hidden>Cancel editing</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section class="page-section" id="section-orders">
+            <div class="section-heading"><div><h2>Customer orders</h2><p>Review orders and update their fulfilment status.</p></div></div>
+            <div class="filter-bar">
+                <input id="orderSearch" type="search" placeholder="Search order, buyer or product..." aria-label="Search orders">
+                <select id="orderStatusFilter" aria-label="Filter orders by status">
+                    <option value="all">All statuses</option>
+                    <option value="pending">Pending</option><option value="accepted">Accepted</option>
+                    <option value="rejected">Rejected</option><option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <button class="button button-secondary" id="refreshOrders">↻ Refresh</button>
+            </div>
+            <div class="content-card"><div class="table-wrap" id="ordersContainer"><p class="empty-state">Loading orders...</p></div></div>
+        </section>
+
+        <section class="page-section" id="section-account">
+            <div class="section-heading"><div><h2>My account</h2><p>Your farmer profile information.</p></div></div>
+            <div class="content-card account-card">
+                <div class="account-profile"><div class="account-avatar" id="accountAvatar">F</div><div><h2 id="accountName">Farmer</h2><p>AgroConnect farmer account</p></div></div>
+                <div class="account-details">
+                    <div><span>Full name</span><strong id="accountNameDetail">—</strong></div>
+                    <div><span>Email address</span><strong id="accountEmail">—</strong></div>
+                    <div><span>Phone number</span><strong id="accountPhone">Not provided</strong></div>
+                    <div><span>Location</span><strong id="accountLocation">Not provided</strong></div>
+                </div>
+                <p class="helper-text">To change your account details, use the account-editing feature when it is available.</p>
+            </div>
+        </section>
+
+        <footer class="footer">© <span id="year"></span> AgroConnect Zambia. Supporting local agriculture.</footer>
+    </main>
+</div>
+</body>
+</html>

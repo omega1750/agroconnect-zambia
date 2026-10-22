@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments | AgroConnect Zambia</title>
+    <link rel="stylesheet" href="payments.css">
+    <script src="payments.js" defer></script>
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="/dashboard/buyer.html">AgroConnect <span>Zambia</span></a>
+        <nav>
+            <a href="/dashboard/buyer.html">Buyer Dashboard</a>
+            <button id="logoutButton" type="button">Log out</button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="intro">
+            <p class="eyebrow">BUYER ACCOUNT</p>
+            <h1>Payments</h1>
+            <p>Choose an eligible order and create a test payment request.</p>
+            <p class="notice">
+                Test mode: no money is transferred. A simulated result is not proof
+                of a real MTN MoMo or Airtel Money transaction.
+            </p>
+        </section>
+
+        <section class="panel">
+            <h2>Make a payment</h2>
+            <form id="paymentForm">
+                <label for="orderId">Order</label>
+                <select id="orderId" required>
+                    <option value="">Loading your orders...</option>
+                </select>
+
+                <div class="balance" id="orderBalance">Choose an order to view its balance.</div>
+
+                <label for="paymentMethod">Payment method</label>
+                <select id="paymentMethod" required>
+                    <option value="mtn_momo">MTN Mobile Money</option>
+                    <option value="airtel_money">Airtel Money</option>
+                </select>
+
+                <label for="phone">Mobile-money phone number</label>
+                <input id="phone" type="tel" placeholder="e.g. 0971234567"
+                       autocomplete="tel" required>
+
+                <button type="submit" id="payButton">Create test payment</button>
+                <p id="formMessage" role="status"></p>
+            </form>
+        </section>
+
+        <section class="panel">
+            <div class="section-heading">
+                <h2>Payment history</h2>
+                <button type="button" id="refreshButton" class="secondary">Refresh</button>
+            </div>
+            <div id="paymentsList">
+                <p>Loading payments...</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

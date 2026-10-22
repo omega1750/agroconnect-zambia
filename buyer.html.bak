@@ -1,0 +1,287 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Buyer Dashboard | AgroConnect Zambia</title>
+
+    <link rel="stylesheet" href="buyer.css">
+    <script src="buyer.js" defer></script>
+</head>
+<body>
+    <div class="dashboard-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <a href="/dashboard/buyer.html" class="brand">
+                <span class="brand-icon">A</span>
+                <span>AgroConnect<span class="brand-country">ZAMBIA</span></span>
+            </a>
+
+            <div class="profile-summary">
+                <div class="avatar" id="sidebarAvatar">CM</div>
+                <div>
+                    <strong id="sidebarName">Buyer</strong>
+                    <small>Buyer account</small>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav" aria-label="Buyer navigation">
+                <a href="#overview" class="nav-link active" data-section="overview">
+                    <span>▦</span>
+                    <span>Overview</span>
+                </a>
+
+                <a href="#marketplace" class="nav-link" data-section="marketplace">
+                    <span>▤</span>
+                    <span>Marketplace</span>
+                </a>
+
+                <a href="#orders" class="nav-link" data-section="orders">
+                    <span>▧</span>
+                    <span>My Orders</span>
+                </a>
+
+                <!-- NEW: Payments navigation -->
+                <a href="/dashboard/payments.html" class="nav-link">
+                    <span>▣</span>
+                    <span>Payments</span>
+                </a>
+
+                <a href="#account" class="nav-link" data-section="account">
+                    <span>♙</span>
+                    <span>My Account</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <p>Fresh from the farm</p>
+                <small>Connect with farmers and find products for your needs.</small>
+
+                <button type="button" id="logoutButton" class="logout-button">
+                    ↪ Log out
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="main-content">
+
+            <header class="topbar">
+                <button type="button" id="menuToggle" class="menu-toggle"
+                        aria-label="Toggle navigation">
+                    ☰
+                </button>
+
+                <div class="breadcrumb">
+                    Dashboard / <strong id="pageTitle">Overview</strong>
+                </div>
+
+                <div class="topbar-profile">
+                    <div class="avatar" id="topbarAvatar">CM</div>
+                    <span id="topbarName">Buyer</span>
+                </div>
+            </header>
+
+            <!-- Overview -->
+            <section id="overview" class="dashboard-section active">
+                <div class="welcome-row">
+                    <div>
+                        <p class="eyebrow">BUYER WORKSPACE</p>
+                        <h1 id="welcomeHeading">Welcome back 👋</h1>
+                        <p>Discover fresh produce and manage your purchases in one place.</p>
+                    </div>
+
+                    <button type="button" class="primary-button"
+                            data-section="marketplace">
+                        ＋ Find products
+                    </button>
+                </div>
+
+                <section class="hero-banner">
+                    <div>
+                        <p class="eyebrow">AGROCONNECT MARKETPLACE</p>
+                        <h2>Good food starts<br>with great farmers.</h2>
+                        <p>Explore available produce from farmers and place your order directly.</p>
+                        <a href="#marketplace" data-section="marketplace">
+                            Explore marketplace →
+                        </a>
+                    </div>
+                </section>
+
+                <div class="stats-grid">
+                    <article class="stat-card">
+                        <span class="stat-icon">🌱</span>
+                        <p>Available products</p>
+                        <h2 id="availableProducts">0</h2>
+                        <small>In the marketplace</small>
+                    </article>
+
+                    <article class="stat-card">
+                        <span class="stat-icon">▧</span>
+                        <p>Total orders</p>
+                        <h2 id="totalOrders">0</h2>
+                        <small>Orders you've placed</small>
+                    </article>
+
+                    <article class="stat-card">
+                        <span class="stat-icon">◷</span>
+                        <p>Pending orders</p>
+                        <h2 id="pendingOrders">0</h2>
+                        <small>Awaiting an update</small>
+                    </article>
+
+                    <article class="stat-card">
+                        <span class="stat-icon">✓</span>
+                        <p>Completed orders</p>
+                        <h2 id="completedOrders">0</h2>
+                        <small>Successfully completed</small>
+                    </article>
+                </div>
+
+                <div class="section-heading">
+                    <div>
+                        <h2>Recently added products</h2>
+                        <p>Explore what farmers currently have available.</p>
+                    </div>
+                    <a href="#marketplace" data-section="marketplace">View all products →</a>
+                </div>
+
+                <div id="recentProducts" class="products-grid">
+                    <p>Loading products...</p>
+                </div>
+
+                <div class="section-heading">
+                    <div>
+                        <h2>Recent orders</h2>
+                        <p>Keep track of your latest purchases.</p>
+                    </div>
+                    <a href="#orders" data-section="orders">View all orders →</a>
+                </div>
+
+                <div id="recentOrders" class="table-container">
+                    <p>Loading orders...</p>
+                </div>
+
+                <!-- NEW: Direct payments card -->
+                <section class="payment-promo">
+                    <div>
+                        <p class="eyebrow">SECURE YOUR PURCHASES</p>
+                        <h2>Manage your payments</h2>
+                        <p>View payment records and continue to the payment page for eligible orders.</p>
+                    </div>
+                    <a class="primary-button" href="/dashboard/payments.html">
+                        Open Payments →
+                    </a>
+                </section>
+            </section>
+
+            <!-- Marketplace -->
+            <section id="marketplace" class="dashboard-section">
+                <div class="welcome-row">
+                    <div>
+                        <p class="eyebrow">FRESH PRODUCE</p>
+                        <h1>Marketplace</h1>
+                        <p>Discover products available from local farmers.</p>
+                    </div>
+                </div>
+
+                <div class="marketplace-tools">
+                    <input type="search" id="productSearch"
+                           placeholder="Search products or farmers..."
+                           aria-label="Search products">
+
+                    <select id="productSort" aria-label="Sort products">
+                        <option value="newest">Newest first</option>
+                        <option value="price-low">Price: low to high</option>
+                        <option value="price-high">Price: high to low</option>
+                        <option value="name">Product name</option>
+                    </select>
+                </div>
+
+                <div id="marketplaceProducts" class="products-grid">
+                    <p>Loading marketplace...</p>
+                </div>
+            </section>
+
+            <!-- My Orders -->
+            <section id="orders" class="dashboard-section">
+                <div class="welcome-row">
+                    <div>
+                        <p class="eyebrow">PURCHASE HISTORY</p>
+                        <h1>My Orders</h1>
+                        <p>Track the progress of orders you have placed.</p>
+                    </div>
+
+                    <a class="primary-button" href="/dashboard/payments.html">
+                        Open Payments →
+                    </a>
+                </div>
+
+                <div class="order-tools">
+                    <input type="search" id="orderSearch"
+                           placeholder="Search by order or product..."
+                           aria-label="Search orders">
+
+                    <select id="orderStatusFilter" aria-label="Filter orders by status">
+                        <option value="all">All statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="accepted">Accepted</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+
+                <div id="ordersTable" class="table-container">
+                    <p>Loading your orders...</p>
+                </div>
+            </section>
+
+            <!-- Account -->
+            <section id="account" class="dashboard-section">
+                <div>
+                    <p class="eyebrow">PROFILE SETTINGS</p>
+                    <h1>My Account</h1>
+                    <p>Review your buyer account information.</p>
+                </div>
+
+                <div class="account-card">
+                    <div class="avatar large" id="accountAvatar">CM</div>
+
+                    <div class="account-details">
+                        <p><strong>Full name</strong></p>
+                        <p id="accountFullName">Loading...</p>
+
+                        <p><strong>Email address</strong></p>
+                        <p id="accountEmail">Loading...</p>
+
+                        <p><strong>Account role</strong></p>
+                        <p>Buyer</p>
+                    </div>
+                </div>
+
+                <a href="/dashboard/payments.html" class="primary-button">
+                    View payment history →
+                </a>
+            </section>
+
+            <footer class="footer">
+                © 2026 AgroConnect Zambia · Connecting farmers to buyers.
+            </footer>
+        </main>
+    </div>
+
+    <!-- Order modal, used if supported by buyer.js -->
+    <div id="orderModal" class="modal" hidden>
+        <div class="modal-content">
+            <button type="button" id="closeOrderModal" class="modal-close"
+                    aria-label="Close">×</button>
+            <h2>Place an order</h2>
+            <div id="orderModalContent"></div>
+        </div>
+    </div>
+</body>
+</html>

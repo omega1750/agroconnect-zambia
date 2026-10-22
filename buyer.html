@@ -1,0 +1,326 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#176b3a">
+    <title>Buyer Dashboard | AgroConnect Zambia</title>
+    <link rel="stylesheet" href="buyer.css">
+    <script src="buyer.js" defer></script>
+</head>
+<body>
+    <div class="dashboard-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <a href="/dashboard/buyer.html" class="brand">
+                <span class="brand-icon">A</span>
+                <span>AgroConnect <span class="brand-country">ZAMBIA</span></span>
+            </a>
+
+            <div class="profile-summary">
+                <div class="avatar" id="profileAvatar">B</div>
+                <div>
+                    <strong id="sidebarName">Buyer</strong>
+                    <small>Buyer account</small>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav" aria-label="Buyer navigation">
+                <a href="#overview" class="nav-link active" data-section="overview">Overview</a>
+                <a href="#marketplace" class="nav-link" data-section="marketplace">Marketplace</a>
+                <a href="#orders" class="nav-link" data-section="orders">My Orders</a>
+                <a href="/dashboard/payments.html" class="nav-link">Payments</a>
+                <a href="#account" class="nav-link" data-section="account">My Account</a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <p>Fresh from the farm</p>
+                <small>Connect with farmers and find products for your needs.</small>
+                <button type="button" id="logoutBtn" class="logout-button">Log out</button>
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="main-content">
+            <header class="topbar">
+                <button type="button" id="menuToggle" class="menu-toggle"
+                        aria-label="Toggle navigation">☰</button>
+
+                <div class="breadcrumb">
+                    Dashboard / <strong id="pageName">Overview</strong>
+                </div>
+
+                <div class="topbar-profile">
+                    <div class="avatar" id="topAvatar">B</div>
+                    <span id="welcomeName">Buyer</span>
+                </div>
+            </header>
+
+            <div id="messageBox" class="message-box" role="alert" hidden></div>
+
+            <!-- Overview -->
+            <section id="overview" class="dashboard-section active">
+                <div class="welcome-row">
+                    <div>
+                        <p class="eyebrow">BUYER WORKSPACE</p>
+                        <h1>Welcome back, <span id="accountName">Buyer</span>!</h1>
+                        <p>Discover fresh produce and manage your purchases in one place.</p>
+                    </div>
+                    <button type="button" class="primary-button" data-section="marketplace">
+                        Find products
+                    </button>
+                </div>
+
+                <section class="hero-banner">
+                    <div>
+                        <p class="eyebrow">AGROCONNECT MARKETPLACE</p>
+                        <h2>Good food starts with great farmers.</h2>
+                        <p>Explore available produce and place your order directly.</p>
+                        <a href="#marketplace" data-section="marketplace">Explore marketplace →</a>
+                    </div>
+                </section>
+
+                <div class="stats-grid">
+                    <article class="stat-card">
+                        <p>Available products</p>
+                        <h2 id="availableCount">0</h2>
+                        <small>In the marketplace</small>
+                    </article>
+                    <article class="stat-card">
+                        <p>Total orders</p>
+                        <h2 id="totalOrders">0</h2>
+                        <small>Orders you have placed</small>
+                    </article>
+                    <article class="stat-card">
+                        <p>Pending orders</p>
+                        <h2 id="pendingOrders">0</h2>
+                        <small>Awaiting an update</small>
+                    </article>
+                    <article class="stat-card">
+                        <p>Completed orders</p>
+                        <h2 id="completedOrders">0</h2>
+                        <small>Successfully completed</small>
+                    </article>
+                </div>
+
+                <div class="section-heading">
+                    <div>
+                        <h2>Recently added products</h2>
+                        <p>Explore what farmers currently have available.</p>
+                    </div>
+                    <button type="button" class="secondary-button" data-section="marketplace">
+                        View all products
+                    </button>
+                </div>
+
+                <div id="featuredProducts" class="products-grid">
+                    <p>Loading products...</p>
+                </div>
+
+                <div class="section-heading">
+                    <div>
+                        <h2>Recent orders</h2>
+                        <p>Keep track of your latest purchases.</p>
+                    </div>
+                    <button type="button" class="secondary-button" data-section="orders">
+                        View all orders
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentOrdersBody">
+                            <tr><td colspan="5">Loading orders...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Marketplace -->
+            <section id="marketplace" class="dashboard-section" hidden>
+                <div class="welcome-row">
+                    <div>
+                        <p class="eyebrow">FRESH PRODUCE</p>
+                        <h1>Marketplace</h1>
+                        <p>Discover products available from local farmers.</p>
+                    </div>
+                    <button type="button" id="refreshProducts" class="secondary-button">
+                        Refresh products
+                    </button>
+                </div>
+
+                <div class="marketplace-tools">
+                    <input type="search" id="productSearch"
+                           placeholder="Search products or farmers..."
+                           aria-label="Search products">
+
+                    <select id="sortProducts" aria-label="Sort products">
+                        <option value="newest">Newest first</option>
+                        <option value="price-low">Price: low to high</option>
+                        <option value="price-high">Price: high to low</option>
+                        <option value="name">Product name</option>
+                    </select>
+                </div>
+
+                <p id="productResultCount">Loading products...</p>
+
+                <div id="productsContainer" class="products-grid">
+                    <p>Loading marketplace...</p>
+                </div>
+            </section>
+
+            <!-- Orders -->
+            <section id="orders" class="dashboard-section" hidden>
+                <div class="welcome-row">
+                    <div>
+                        <p class="eyebrow">PURCHASE HISTORY</p>
+                        <h1>My Orders</h1>
+                        <p>Track the progress of your purchases.</p>
+                    </div>
+                    <button type="button" id="refreshOrders" class="secondary-button">
+                        Refresh orders
+                    </button>
+                </div>
+
+                <div class="order-tools">
+                    <input type="search" id="orderSearch"
+                           placeholder="Search by order, product or farmer..."
+                           aria-label="Search orders">
+
+                    <select id="orderStatusFilter" aria-label="Filter orders by status">
+                        <option value="all">All statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="accepted">Accepted</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table id="ordersTable">
+                        <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Product</th>
+                                <th>Farmer</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <tr><td colspan="7">Loading orders...</td></tr>
+                        </tbody>
+                    </table>
+                    <div id="ordersEmpty" class="empty-state" hidden>
+                        <h3>No orders found</h3>
+                        <p>Your orders will appear here when available.</p>
+                        <button type="button" class="primary-button" data-section="marketplace">
+                            Browse products
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Account -->
+            <section id="account" class="dashboard-section" hidden>
+                <p class="eyebrow">PROFILE SETTINGS</p>
+                <h1>My Account</h1>
+                <p>Review your buyer account information.</p>
+
+                <div class="account-card">
+                    <div class="avatar large" id="accountAvatar">B</div>
+                    <div class="account-details">
+                        <h2 id="accountNameHeading">Buyer account</h2>
+                        <p><strong>Full name</strong></p>
+                        <p id="accountFullName">Loading...</p>
+                        <p><strong>Email address</strong></p>
+                        <p id="accountEmail">Loading...</p>
+                        <p><strong>Account role</strong></p>
+                        <p>Buyer</p>
+                    </div>
+                </div>
+
+                <a href="/dashboard/payments.html" class="primary-button">
+                    View payment history →
+                </a>
+                <button type="button" id="accountLogoutBtn" class="logout-button">
+                    Log out
+                </button>
+            </section>
+
+            <footer class="footer">
+                © <span id="currentYear">2026</span> AgroConnect Zambia · Connecting farmers to buyers.
+            </footer>
+        </main>
+    </div>
+
+    <!-- Place-order modal -->
+    <div id="orderModal" class="modal" hidden>
+        <div class="modal-content">
+            <button type="button" id="closeOrderModal" class="modal-close"
+                    aria-label="Close order form">×</button>
+
+            <h2>Place an order</h2>
+            <p>Review your selected product and enter the quantity you need.</p>
+
+            <form id="orderForm">
+                <input type="hidden" id="orderProductId" name="productId">
+
+                <div class="form-group">
+                    <label for="modalProductName">Product</label>
+                    <p id="modalProductName">—</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="modalFarmerName">Farmer</label>
+                    <p id="modalFarmerName">—</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="modalProductPrice">Price</label>
+                    <p id="modalProductPrice">—</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="modalProductDescription">Description</label>
+                    <p id="modalProductDescription">—</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="orderQuantity">Quantity</label>
+                    <div class="quantity-controls">
+                        <button type="button" id="decreaseQuantity" aria-label="Decrease quantity">−</button>
+                        <input type="number" id="orderQuantity" name="quantity"
+                               min="1" step="1" value="1" required>
+                        <button type="button" id="increaseQuantity" aria-label="Increase quantity">+</button>
+                    </div>
+                    <small id="quantityHelp">Enter your required quantity.</small>
+                </div>
+
+                <div class="form-group">
+                    <strong>Estimated total: </strong>
+                    <span id="estimatedTotal">—</span>
+                </div>
+
+                <button type="submit" id="placeOrderBtn" class="primary-button">
+                    Confirm order
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

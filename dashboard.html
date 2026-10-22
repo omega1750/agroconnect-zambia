@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | AgroConnect Zambia</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="dashboard.js" defer></script>
+</head>
+<body>
+    <header class="header">
+        <a class="logo" href="/dashboard/dashboard.html">
+            AgroConnect <span>Zambia</span>
+        </a>
+
+        <div class="user-area">
+            <span id="userName">Loading account...</span>
+            <button id="logoutButton" type="button">Logout</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="welcome">
+            <h1 id="welcomeTitle">Welcome to AgroConnect!</h1>
+            <p>Connect with farmers and buyers across Zambia.</p>
+            <p class="role">Account type: <strong id="userRole">Loading...</strong></p>
+        </section>
+
+        <section class="dashboard-grid">
+            <article class="dashboard-card">
+                <div class="card-icon">🌾</div>
+                <h2>Browse Produce</h2>
+                <p>Explore agricultural products available from farmers.</p>
+                <a href="#" id="browseLink">Browse Products</a>
+            </article>
+
+            <article class="dashboard-card">
+                <div class="card-icon">🛒</div>
+                <h2>My Orders</h2>
+                <p>Keep track of your agricultural purchases and sales.</p>
+                <a href="#" id="ordersLink">View Orders</a>
+            </article>
+
+            <article class="dashboard-card">
+                <div class="card-icon">👤</div>
+                <h2>My Profile</h2>
+                <p>View your account information.</p>
+                <a href="#" id="profileLink">View Profile</a>
+            </article>
+        </section>
+
+        <p id="dashboardMessage" class="message" role="status"></p>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 AgroConnect Zambia. All rights reserved.</p>
+    </footer>
+</body>
+</html>
