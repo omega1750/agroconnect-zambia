@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#14532d">
+    <meta name="description" content="Join AgroConnect Zambia to connect farmers and buyers across Zambia.">
+    <title>Create Account | AgroConnect Zambia</title>
+    <link rel="stylesheet" href="register.css">
+    <script src="register.js" defer></script>
+</head>
+<body>
+    <main class="page">
+        <section class="hero">
+            <a class="brand" href="/" aria-label="AgroConnect home">
+                <span class="brand-icon">🌱</span>
+                <span>Agro<span>Connect</span><small>ZAMBIA</small></span>
+            </a>
+
+            <div class="hero-content">
+                <span class="eyebrow">GROW TOGETHER. TRADE SMARTER.</span>
+                <h1>Connecting Zambia's farms to its future.</h1>
+                <p>
+                    A smarter agricultural marketplace bringing farmers
+                    and buyers together to create opportunities, build
+                    trust and grow local businesses.
+                </p>
+
+                <div class="benefits">
+                    <div><span>✓</span> Connect with local farmers and buyers</div>
+                    <div><span>✓</span> Discover agricultural opportunities</div>
+                    <div><span>✓</span> Manage your marketplace account</div>
+                </div>
+            </div>
+
+            <div class="hero-footer">
+                <span>🌍</span> Empowering agriculture across Zambia
+            </div>
+        </section>
+
+        <section class="form-panel">
+            <div class="form-wrap">
+                <div class="mobile-brand">🌱 AgroConnect Zambia</div>
+
+                <div class="heading">
+                    <span class="step-label">YOUR JOURNEY STARTS HERE</span>
+                    <h2>Create your account</h2>
+                    <p>Enter your details to join our growing community.</p>
+                </div>
+
+                <div id="formMessage" class="message" role="status"
+                     aria-live="polite" hidden></div>
+
+                <form id="registerForm" novalidate>
+                    <fieldset class="account-types">
+                        <legend>I want to join as a</legend>
+
+                        <label class="type-card selected" id="farmerCard">
+                            <input type="radio" name="role" value="farmer" checked>
+                            <span class="type-icon">🌾</span>
+                            <span class="type-text">
+                                <strong>Farmer</strong>
+                                <small>Sell my produce</small>
+                            </span>
+                            <span class="radio-mark"></span>
+                        </label>
+
+                        <label class="type-card" id="buyerCard">
+                            <input type="radio" name="role" value="buyer">
+                            <span class="type-icon">🛒</span>
+                            <span class="type-text">
+                                <strong>Buyer</strong>
+                                <small>Buy fresh produce</small>
+                            </span>
+                            <span class="radio-mark"></span>
+                        </label>
+                    </fieldset>
+
+                    <div class="field">
+                        <label for="fullName">Full name</label>
+                        <input id="fullName" name="fullName" type="text"
+                               placeholder="e.g. Omega Mulafu"
+                               autocomplete="name" minlength="2"
+                               maxlength="100" required>
+                        <small class="field-error" id="fullNameError"></small>
+                    </div>
+
+                    <div class="field">
+                        <label for="email">Email address</label>
+                        <input id="email" name="email" type="email"
+                               placeholder="you@example.com"
+                               autocomplete="email" maxlength="190" required>
+                        <small class="field-error" id="emailError"></small>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="phone">Phone number</label>
+                            <input id="phone" name="phone" type="tel"
+                                   placeholder="0971234567"
+                                   autocomplete="tel" maxlength="20" required>
+                            <small class="field-error" id="phoneError"></small>
+                        </div>
+
+                        <div class="field">
+                            <label for="location">Province</label>
+                            <select id="location" name="location" required>
+                                <option value="">Select province</option>
+                                <option>Central</option>
+                                <option>Copperbelt</option>
+                                <option>Eastern</option>
+                                <option>Luapula</option>
+                                <option>Lusaka</option>
+                                <option>Muchinga</option>
+                                <option>Northern</option>
+                                <option>North-Western</option>
+                                <option>Southern</option>
+                                <option>Western</option>
+                            </select>
+                            <small class="field-error" id="locationError"></small>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="password">Create password</label>
+                        <div class="password-wrap">
+                            <input id="password" name="password" type="password"
+                                   placeholder="At least 8 characters"
+                                   autocomplete="new-password"
+                                   minlength="8" maxlength="72" required>
+                            <button class="toggle-password" type="button"
+                                    data-target="password"
+                                    aria-label="Show password">Show</button>
+                        </div>
+                        <div class="strength-track">
+                            <span id="strengthBar"></span>
+                        </div>
+                        <small id="strengthText" class="strength-text">
+                            Use at least 8 characters.
+                        </small>
+                        <small class="field-error" id="passwordError"></small>
+                    </div>
+
+                    <div class="field">
+                        <label for="confirmPassword">Confirm password</label>
+                        <div class="password-wrap">
+                            <input id="confirmPassword" name="confirmPassword"
+                                   type="password" placeholder="Enter password again"
+                                   autocomplete="new-password" required>
+                            <button class="toggle-password" type="button"
+                                    data-target="confirmPassword"
+                                    aria-label="Show confirmation password">Show</button>
+                        </div>
+                        <small class="field-error" id="confirmPasswordError"></small>
+                    </div>
+
+                    <label class="terms">
+                        <input id="terms" type="checkbox" required>
+                        <span>I agree to the terms of use and understand that
+                            my account details will be used to provide
+                            AgroConnect services.</span>
+                    </label>
+                    <small class="field-error" id="termsError"></small>
+
+                    <button class="submit-btn" id="submitBtn" type="submit">
+                        <span id="buttonText">Create my account</span>
+                        <span aria-hidden="true">→</span>
+                    </button>
+                </form>
+
+                <p class="login-prompt">
+                    Already have an account?
+                    <a href="/login/login.html">Sign in</a>
+                </p>
+
+                <p class="security-note">
+                    🔒 Your account information is transmitted to our server
+                    for registration.
+                </p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

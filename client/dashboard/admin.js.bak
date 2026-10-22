@@ -1,0 +1,618 @@
+"use strict";
+
+const API = "/api/admin";
+const AUTH_API = "/api/auth";
+
+const adminMessage = document.getElementById("adminMessage");
+const adminName = document.getElementById("adminName");
+const adminRole = document.getElementById("adminRole");
+
+const refreshButton = document.getElementById("refreshButton");
+const logoutButton = document.getElementById("logoutButton");
+
+let allUsers = [];
+let allProducts = [];
+
+/* ---------- Utility Functions ---------- */
+
+function showMessage(message, type = "info") {
+    if (!adminMessage) return;
+
+    adminMessage.textContent = message;
+    adminMessage.className = `admin-message ${type}`;
+}
+
+function clearMessage() {
+    if (!adminMessage) return;
+
+    adminMessage.textContent = "";
+    adminMessage.className = "admin-message";
+}
+
+async function apiRequest(url, options = {}) {
+    const response = await fetch(url, {
+        credentials: "same-origin",
+        ...options,
+        headers: {
+            ...(options.headers || {})
+        }
+    });
+
+    let data = {};
+
+    try {
+        data = await response.json();
+    } catch {
+        data = {};
+    }
+
+    if (response.status === 401) {
+        window.location.href = "/login/login.html";
+        throw new Error("Your session has expired. Please log in again.");
+    }
+
+    if (response.status === 403) {
+        throw new Error(
+            data.message || "Administrator access is required."
+        );
+    }
+
+    if (!response.ok) {
+        throw new Error(
+            data.message || "The request could not be completed."
+        );
+    }
+
+    return data;
+}
+
+function formatNumber(value) {
+    const number = Number(value);
+
+    return Number.isFinite(number)
+        ? number.toLocaleString()
+        : "0";
+}
+
+function formatMoney(value) {
+    const number = Number(value);
+
+    return Number.isFinite(number)
+        ? number.toLocaleString("en-ZM", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })
+        : "0.00";
+}
+
+function formatDate(value) {
+    if (!value) return "—";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return "—";
+    }
+
+    return date.toLocaleDateString("en-ZM", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
+}
+
+function createCell(value) {
+    const cell = document.createElement("td");
+    cell.textContent =
+        value === null || value === undefined || value === ""
+            ? "—"
+            : String(value);
+
+    return cell;
+}
+
+function createStatusBadge(status, className) {
+    const badge = document.createElement("span");
+    badge.className = `status-badge ${className}`;
+    badge.textContent = status;
+    return badge;
+}
+
+function createEmptyRow(tableBody, columnCount, message) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+
+    cell.colSpan = columnCount;
+    cell.className = "empty-cell";
+    cell.textContent = message;
+
+    row.appendChild(cell);
+    tableBody.replaceChildren(row);
+}
+
+function addRow(tableBody, values) {
+    const row = document.createElement("tr");
+
+    values.forEach(value => {
+        if (value instanceof Node) {
+            row.appendChild(value);
+        } else {
+            row.appendChild(createCell(value));
+        }
+    });
+
+    tableBody.appendChild(row);
+}
+
+function getAccountStatus(user) {
+    return Number(user.is_active) === 1 ? "Active" : "Inactive";
+}
+
+function getStatusClass(status) {
+    const normalized = String(status || "").toLowerCase();
+
+    const allowedClasses = [
+        "status-active",
+        "status-inactive",
+        "status-available",
+        "status-sold-out",
+        "status-pending",
+        "status-accepted",
+        "status-rejected",
+        "status-completed",
+        "status-cancelled",
+        "status-admin",
+        "status-farmer",
+        "status-buyer"
+    ];
+
+    const className = `status-${normalized.replace(/_/g, "-")}`;
+
+    return allowedClasses.includes(className)
+        ? className
+        : "";
+}
+
+/* ---------- Authentication ---------- */
+
+async function loadAdminAccount() {
+    const data = await apiRequest(`${AUTH_API}/me`);
+    const user = data.user;
+
+    if (!user || user.role !== "admin") {
+        window.location.href = "/login/login.html";
+        return false;
+    }
+
+    adminName.textContent = user.fullName || "Administrator";
+    adminRole.textContent = "Administrator";
+
+    return true;
+}
+
+async function logout() {
+    if (logoutButton) {
+        logoutButton.disabled = true;
+        logoutButton.textContent = "Logging out...";
+    }
+
+    try {
+        await apiRequest(`${AUTH_API}/logout`, {
+            method: "POST"
+        });
+    } catch (error) {
+        console.error("Logout error:", error.message);
+    } finally {
+        window.location.href = "/login/login.html";
+    }
+}
+
+/* ---------- Dashboard Statistics ---------- */
+
+async function loadOverview() {
+    const data = await apiRequest(`${API}/overview`);
+
+    const users = data.users || {};
+    const products = data.products || {};
+    const orders = data.orders || {};
+
+    document.getElementById("totalUsers").textContent =
+        formatNumber(users.totalUsers);
+
+    document.getElementById("totalFarmers").textContent =
+        formatNumber(users.totalFarmers);
+
+    document.getElementById("totalBuyers").textContent =
+        formatNumber(users.totalBuyers);
+
+    document.getElementById("totalAdmins").textContent =
+        formatNumber(users.totalAdmins);
+
+    document.getElementById("activeUsers").textContent =
+        formatNumber(users.activeUsers);
+
+    document.getElementById("inactiveUsers").textContent =
+        formatNumber(users.inactiveUsers);
+
+    document.getElementById("totalProducts").textContent =
+        formatNumber(products.totalProducts);
+
+    document.getElementById("availableProducts").textContent =
+        formatNumber(products.availableProducts);
+
+    document.getElementById("soldOutProducts").textContent =
+        formatNumber(products.soldOutProducts);
+
+    document.getElementById("totalOrders").textContent =
+        formatNumber(orders.totalOrders);
+
+    document.getElementById("pendingOrders").textContent =
+        formatNumber(orders.pendingOrders);
+
+    document.getElementById("completedOrders").textContent =
+        formatNumber(orders.completedOrders);
+}
+
+/* ---------- Load Users ---------- */
+
+async function fetchUsers(role = "all", search = "") {
+    const params = new URLSearchParams();
+
+    params.set("role", role);
+
+    if (search.trim()) {
+        params.set("search", search.trim());
+    }
+
+    const data = await apiRequest(`${API}/users?${params.toString()}`);
+
+    return Array.isArray(data.users) ? data.users : [];
+}
+
+function renderUsers(users) {
+    const body = document.getElementById("usersTableBody");
+
+    document.getElementById("usersCount").textContent =
+        `${users.length} user${users.length === 1 ? "" : "s"}`;
+
+    if (!users.length) {
+        createEmptyRow(body, 8, "No users found.");
+        return;
+    }
+
+    body.replaceChildren();
+
+    users.forEach(user => {
+        const role = String(user.role || "").toLowerCase();
+        const status = getAccountStatus(user);
+
+        const roleBadge = createStatusBadge(
+            role.charAt(0).toUpperCase() + role.slice(1),
+            getStatusClass(role)
+        );
+
+        const statusBadge = createStatusBadge(
+            status,
+            getStatusClass(status.toLowerCase())
+        );
+
+        addRow(body, [
+            user.user_id,
+            user.full_name,
+            user.email,
+            user.phone,
+            user.location,
+            roleBadge,
+            statusBadge,
+            formatDate(user.created_at)
+        ]);
+    });
+}
+
+function renderRoleUsers(users, role) {
+    const isFarmer = role === "farmer";
+
+    const body = document.getElementById(
+        isFarmer ? "farmersTableBody" : "buyersTableBody"
+    );
+
+    const count = document.getElementById(
+        isFarmer ? "farmersCount" : "buyersCount"
+    );
+
+    const label = isFarmer ? "farmer" : "buyer";
+
+    count.textContent =
+        `${users.length} ${label}${users.length === 1 ? "" : "s"}`;
+
+    if (!users.length) {
+        createEmptyRow(
+            body,
+            7,
+            `No ${label}s found.`
+        );
+        return;
+    }
+
+    body.replaceChildren();
+
+    users.forEach(user => {
+        const status = getAccountStatus(user);
+
+        addRow(body, [
+            user.user_id,
+            user.full_name,
+            user.email,
+            user.phone,
+            user.location,
+            createStatusBadge(
+                status,
+                getStatusClass(status.toLowerCase())
+            ),
+            formatDate(user.created_at)
+        ]);
+    });
+}
+
+async function loadUsers() {
+    const search = document.getElementById("userSearch").value;
+    const role = document.getElementById("userRoleFilter").value;
+
+    const users = await fetchUsers(role, search);
+
+    if (role === "all" && !search.trim()) {
+        allUsers = users;
+    }
+
+    renderUsers(users);
+}
+
+async function loadFarmers() {
+    const farmers = await fetchUsers("farmer");
+    renderRoleUsers(farmers, "farmer");
+}
+
+async function loadBuyers() {
+    const buyers = await fetchUsers("buyer");
+    renderRoleUsers(buyers, "buyer");
+}
+
+/* ---------- Load Products ---------- */
+
+async function fetchProducts(search = "") {
+    const params = new URLSearchParams();
+
+    if (search.trim()) {
+        params.set("search", search.trim());
+    }
+
+    const query = params.toString();
+
+    const data = await apiRequest(
+        `${API}/products${query ? `?${query}` : ""}`
+    );
+
+    return Array.isArray(data.products) ? data.products : [];
+}
+
+function renderProducts(products) {
+    const body = document.getElementById("productsTableBody");
+
+    document.getElementById("productsCount").textContent =
+        `${products.length} product${products.length === 1 ? "" : "s"}`;
+
+    if (!products.length) {
+        createEmptyRow(body, 8, "No products found.");
+        return;
+    }
+
+    body.replaceChildren();
+
+    products.forEach(product => {
+        const status = String(product.status || "unknown");
+        const statusLabel = status.replace(/_/g, " ");
+
+        addRow(body, [
+            product.product_id,
+            product.product_name,
+            product.farmer_name,
+            `K ${formatMoney(product.price)}`,
+            product.quantity,
+            product.unit,
+            createStatusBadge(
+                statusLabel.charAt(0).toUpperCase() +
+                    statusLabel.slice(1),
+                getStatusClass(status)
+            ),
+            formatDate(product.created_at)
+        ]);
+    });
+}
+
+async function loadProducts() {
+    const search = document.getElementById("productSearch").value;
+
+    allProducts = await fetchProducts(search);
+    renderProducts(allProducts);
+}
+
+/* ---------- Navigation Tabs ---------- */
+
+function setupTabs() {
+    const tabButtons = document.querySelectorAll(".tab-button");
+
+    tabButtons.forEach(button => {
+        button.addEventListener("click", async () => {
+            const targetId = button.dataset.section;
+            const targetPanel = document.getElementById(targetId);
+
+            if (!targetPanel) return;
+
+            tabButtons.forEach(tab => {
+                tab.classList.remove("active");
+                tab.setAttribute("aria-selected", "false");
+            });
+
+            button.classList.add("active");
+            button.setAttribute("aria-selected", "true");
+
+            document.querySelectorAll(".management-panel")
+                .forEach(panel => panel.classList.add("hidden"));
+
+            targetPanel.classList.remove("hidden");
+
+            try {
+                clearMessage();
+
+                if (targetId === "usersSection") {
+                    await loadUsers();
+                } else if (targetId === "farmersSection") {
+                    await loadFarmers();
+                } else if (targetId === "buyersSection") {
+                    await loadBuyers();
+                } else if (targetId === "productsSection") {
+                    await loadProducts();
+                }
+            } catch (error) {
+                showMessage(error.message, "error");
+            }
+        });
+    });
+}
+
+/* ---------- Search Controls ---------- */
+
+function setupSearch() {
+    document.getElementById("searchUsersButton")
+        .addEventListener("click", async () => {
+            try {
+                clearMessage();
+                await loadUsers();
+            } catch (error) {
+                showMessage(error.message, "error");
+            }
+        });
+
+    document.getElementById("userSearch")
+        .addEventListener("keydown", async event => {
+            if (event.key !== "Enter") return;
+
+            event.preventDefault();
+
+            try {
+                clearMessage();
+                await loadUsers();
+            } catch (error) {
+                showMessage(error.message, "error");
+            }
+        });
+
+    document.getElementById("userRoleFilter")
+        .addEventListener("change", async () => {
+            try {
+                clearMessage();
+                await loadUsers();
+            } catch (error) {
+                showMessage(error.message, "error");
+            }
+        });
+
+    document.getElementById("searchProductsButton")
+        .addEventListener("click", async () => {
+            try {
+                clearMessage();
+                await loadProducts();
+            } catch (error) {
+                showMessage(error.message, "error");
+            }
+        });
+
+    document.getElementById("productSearch")
+        .addEventListener("keydown", async event => {
+            if (event.key !== "Enter") return;
+
+            event.preventDefault();
+
+            try {
+                clearMessage();
+                await loadProducts();
+            } catch (error) {
+                showMessage(error.message, "error");
+            }
+        });
+}
+
+/* ---------- Refresh Dashboard ---------- */
+
+async function refreshDashboard() {
+    if (refreshButton) {
+        refreshButton.disabled = true;
+        refreshButton.textContent = "Refreshing...";
+    }
+
+    try {
+        clearMessage();
+
+        await loadOverview();
+
+        const activeSection = document.querySelector(
+            ".tab-button.active"
+        );
+
+        const section = activeSection?.dataset.section;
+
+        if (section === "farmersSection") {
+            await loadFarmers();
+        } else if (section === "buyersSection") {
+            await loadBuyers();
+        } else if (section === "productsSection") {
+            await loadProducts();
+        } else {
+            await loadUsers();
+        }
+
+        showMessage("Dashboard data refreshed successfully.", "success");
+    } catch (error) {
+        showMessage(error.message, "error");
+    } finally {
+        if (refreshButton) {
+            refreshButton.disabled = false;
+            refreshButton.textContent = "↻ Refresh Data";
+        }
+    }
+}
+
+/* ---------- Initialize Dashboard ---------- */
+
+async function initializeAdminDashboard() {
+    try {
+        const isAdmin = await loadAdminAccount();
+
+        if (!isAdmin) return;
+
+        setupTabs();
+        setupSearch();
+
+        logoutButton.addEventListener("click", logout);
+        refreshButton.addEventListener("click", refreshDashboard);
+
+        await Promise.all([
+            loadOverview(),
+            loadUsers()
+        ]);
+
+        showMessage("Administrator dashboard loaded.", "success");
+    } catch (error) {
+        console.error("Admin dashboard initialization:", error);
+
+        showMessage(
+            `${error.message} Check that the server is running and the admin API routes are mounted.`,
+            "error"
+        );
+    }
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    initializeAdminDashboard
+);
